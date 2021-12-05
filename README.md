@@ -38,7 +38,7 @@
 
 ## Hướng dẫn sử dụng
 
-Trước khi sử dụng, cần download bộ nhận dạng và dataset tại [đây](https://www.mediafire.com/file/9c9rzh7wxu6h11u/model_data.rar/file)\
+Trước khi sử dụng, cần download bộ nhận dạng và dataset [tại đây](https://www.mediafire.com/file/9c9rzh7wxu6h11u/model_data.rar/file)\
 Giải nén `model_data` rồi cho vào folder `facial-expression-recognition-svm`
 
 ### Huấn luyện
