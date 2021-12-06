@@ -8,6 +8,12 @@ import pickle
 from sklearn.metrics import classification_report, confusion_matrix
 import pandas as pd
 
+# Các bước huấn luyện:
+# - Tách các khuôn mặt ra khỏi dataset, tìm đặc trưng khuôn mặt của chúng rồi vector hoá nó, gán
+# với mỗi đặc trưng là cảm xúc gì rồi cho hết vào bộ dữ liệu huấn luyện
+# - Chạy SVC với bộ dữ liệu huấn luyện
+# - Nhận lại kết quả là MODEL_DATA_FILE được dùng để nhận dạng
+
 MODEL_PREDICTOR_FILE = "model_data/shape_predictor_68_face_landmarks.dat"
 MODEL_DATA_FILE = "model_data/model.pkl"
 MODEL_DATASET = "model_data/fer2013.csv"

@@ -4,6 +4,10 @@ import pickle
 import numpy as np
 import math
 
+# Các bước nhận dạng:
+# - Tách các khuôn mặt ra khỏi ảnh input, tìm đặc trưng khuôn mặt của chúng rồi vector hoá nó
+# - Cho đặc trưng khuôn mặt vào MODEL_DATA_FILE nhận lại được kết quả là cảm xúc của khuôn mặt đó
+
 MODEL_PREDICTOR_FILE = "model_data/shape_predictor_68_face_landmarks.dat"
 MODEL_DATA_FILE = "model_data/model.pkl"
 SHOW_FACE_DETAIL = False
