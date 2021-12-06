@@ -22,17 +22,27 @@ EMOTIONS_IN_DATASET = [
 ]
 EMOTIONS_TO_TRAIN_FOR = ["angry", "happy", "sad"]
 
+# MODEL_PREDICTOR_FILE là bộ dữ liệu được huấn luyện sẵn để tách các đặc trưng mặt ra khỏi ảnh
+# MODEL_DATASET là danh sách dữ liệu mẫu ban đầu phân lớp các đặc trưng mặt là cảm xúc nào
+# Dùng output của MODEL_PREDICTOR_FILE huấn luyện SVM dựa trên dữ liệu mẫu là MODEL_DATASET ta được MODEL_DATA_FILE
+
 detector = dlib.get_frontal_face_detector()
 model = dlib.shape_predictor(MODEL_PREDICTOR_FILE)
 clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+
+# Tách mặt ra khỏi ảnh bằng dlib.get_frontal_face_detector()
+# Load bộ dữ liệu tách đặc trung khuôn mặt bằng dlib.shape_predictor(MODEL_PREDICTOR_FILE)
 
 # Set the classifier as a support vector machines with linear kernel
 clf = SVC(C=0.01, kernel="linear", decision_function_shape="ovo", probability=True)
 
 
 def get_landmarks(image):
+    # Tìm các khuôn mặt trong ảnh
     detections = detector(image, 1)
+
     # For all detected face instances individually
+    # Tìm các đặc trưng khuôn mặt, vector hoá chúng
     for k, d in enumerate(detections):
         # Get facial landmarks with prediction model
         shape = model(image, d)
@@ -91,6 +101,8 @@ def get_landmarks(image):
     if len(detections) < 1:
         # In case no case selected, print "error" values
         landmarks = "error"
+
+    # Trả lại các đặc trưng khuôn mặt
     return landmarks
 
 
@@ -100,20 +112,31 @@ def make_sets():
     testing_data = []
     testing_label = []
 
+    # training_data lưu các dữ liệu mẫu
+    # training_label lưu kết quả của các dữ liệu mẫu đó
+    # testing_data lưu các dữ liệu kiểm tra
+    # testing_label lưu kết quả của các dữ liệu kiểm tra đó
+
+    # Load dữ liệu mẫu, các đặc trưng khuôn mặt trong MODEL_DATASET được thể hiện dưới dạng các pixel
+    # trên khuôn ảnh 48x48
     data = pd.read_csv(MODEL_DATASET)
     pixels = []
 
     for pixel in data["pixels"]:
         pixels.append(np.fromstring(pixel, dtype=np.uint8, sep=" ").reshape((48, 48)))
 
+    # Với mỗi đặc trưng khuôn mặt trong MODEL_DATASET, vector hoá chúng rồi cho vào bộ dữ liệu training và testing
     for index, value in enumerate(pixels):
         if EMOTIONS_IN_DATASET[data["emotion"][index]] in EMOTIONS_TO_TRAIN_FOR:
+
+            # Vector hoá đặc trưng khuôn mặt
             clahe_img = clahe.apply(value)
             landmarks_vec = get_landmarks(clahe_img)
 
             if landmarks_vec == "error":
                 pass
             else:
+                # Thêm vào bộ dữ liệu
                 if data["Usage"][index] == "Training":
                     training_data.append(landmarks_vec)
                     training_label.append(EMOTIONS_IN_DATASET[data["emotion"][index]])

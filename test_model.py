@@ -8,6 +8,8 @@ MODEL_PREDICTOR_FILE = "model_data/shape_predictor_68_face_landmarks.dat"
 MODEL_DATA_FILE = "model_data/model.pkl"
 SHOW_FACE_DETAIL = False
 
+# MODEL_PREDICTOR_FILE là bộ dữ liệu được huấn luyện sẵn để tách các đặc trưng mặt ra khỏi ảnh
+# MODEL_DATA_FILE là bộ dữ liệu phân lớp đã được huấn luyện để phân biệt các cảm xúc
 
 detector = dlib.get_frontal_face_detector()
 model_predictor = dlib.shape_predictor(MODEL_PREDICTOR_FILE)
@@ -17,9 +19,12 @@ with open(MODEL_DATA_FILE, "rb") as file:
 
 def get_faces_and_landmarks(image, frame, show_detail=SHOW_FACE_DETAIL):
     result = []
+
+    # Tìm các khuôn mặt trong ảnh
     detections = detector(image, 1)
 
     # For all detected face instances individually
+    # Tìm các đặc trưng khuôn mặt, vector hoá chúng
     for _, face in enumerate(detections):
         # Get facial landmarks with prediction model
         shape = model_predictor(image, face)
@@ -92,6 +97,8 @@ def get_faces_and_landmarks(image, frame, show_detail=SHOW_FACE_DETAIL):
             landmarks.append(angle_relative)
 
         result.append((face, landmarks))
+
+    # Trả lại các đặc trưng khuôn mặt và ảnh khuôn mặt kèm với chúng
     return result
 
 
