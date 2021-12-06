@@ -79,7 +79,7 @@ Tuy nhiên, càng nhiều cảm xúc mà chương trình có thể nhận dạng
         python test_model.py
         ```
 
-- Để hiện thị chi tiết các đặc trung khuôn mặt, đặt `SHOW_FACE_DETAIL = True`
+- Để hiện thị chi tiết các đặc trưng khuôn mặt, đặt `SHOW_FACE_DETAIL = True`
 
 ## Credits
 - https://github.com/tupm2208/facial-emotion-recognition-svm
