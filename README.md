@@ -38,18 +38,18 @@
 
 ## Hướng dẫn sử dụng
 
-Trước khi sử dụng, cần download bộ nhận dạng và dataset tại [đây](https://www.mediafire.com/file/9c9rzh7wxu6h11u/model_data.rar/file)\
+Trước khi sử dụng, cần download bộ nhận dạng và dataset [tại đây](https://www.mediafire.com/file/9c9rzh7wxu6h11u/model_data.rar/file)\
 Giải nén `model_data` rồi cho vào folder `facial-expression-recognition-svm`
 
 ### Huấn luyện
 Chương trình có thể nhận diện được 7 loại cảm xúc khác nhau:\
-**angry :angry:,
-disgust :vomiting_face:,
-fear :fearful:,
-happy :smile:,
-sad :cry:,
-surprise :open_mouth:,
-neutral :neutral_face:**
+**angry:angry:,
+disgust:vomiting_face:,
+fear:fearful:,
+happy:smile:,
+sad:cry:,
+surprise:open_mouth:,
+neutral:neutral_face:**
 
 Tuy nhiên, càng nhiều cảm xúc mà chương trình có thể nhận dạng thì độ chính xác sẽ càng thấp, cho nên chúng ta sẽ chỉ huấn luyện nhận dạng một lượng cảm xúc nhất định thôi để tăng độ chính xác chung cho toàn bộ chương trình:
 
