@@ -1,4 +1,3 @@
-from sklearn import preprocessing
 import emotion_clf
 import cv2
 import pickle
@@ -9,14 +8,10 @@ SHOW_FACE_DETAIL = False
 clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
 with open(emotion_clf.MODEL_DATA_FILE, "rb") as file:
     model_data = pickle.load(file)
-# with open(emotion_clf.SCALE_FILE, "rb") as file:
-#     scaler = pickle.load(file)
 
 
 def predict(landmark_vectorized):
-    # Predict emotion
     npar_pd = np.array([landmark_vectorized])
-    # npar_pd = scaler.transform(npar_pd)
     prediction_emo = model_data.predict(npar_pd)
 
     return prediction_emo[0]
@@ -126,5 +121,5 @@ def overlay_frame(frame, face_rect, emotion):
 
 
 if __name__ == "__main__":
-    # show_webcam_and_run()
-    run_image("D:\\smile2.png")
+    show_webcam_and_run()
+    # run_image("D:\\smile2.png")
