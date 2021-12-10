@@ -67,16 +67,16 @@ Tuy nhiên, càng nhiều cảm xúc mà chương trình có thể nhận dạng
 - Chạy nhận dạng sử dụng camera:
 
     ```
-    python test_model.py
+    python run_model.py
     ```
 - Chạy nhận dạng từ file ảnh:
-    - Mở file `test_model.py`
-    - Ở cuối file, comment out hoặc xoá `show_webcam_and_run(model_data)`
-    - Thiết lập `run_image("<Đường dẫn tới ảnh>", model_data)`
+    - Mở file `run_model.py`
+    - Ở cuối file, comment out hoặc xoá `show_webcam_and_run()`
+    - Thiết lập `run_image("<Đường dẫn tới ảnh>")`
     - Chạy:
     
         ```
-        python test_model.py
+        python run_model.py
         ```
 
 - Để hiện thị chi tiết các đặc trưng khuôn mặt, đặt `SHOW_FACE_DETAIL = True`
