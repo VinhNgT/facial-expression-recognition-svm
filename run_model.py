@@ -4,6 +4,8 @@ import cv2
 import pickle
 import numpy as np
 
+SHOW_FACE_DETAIL = False
+
 clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
 with open(emotion_clf.MODEL_DATA_FILE, "rb") as file:
     model_data = pickle.load(file)
@@ -62,6 +64,36 @@ def show_webcam_and_run():
     cv2.destroyAllWindows()
 
 
+def run_image(path):
+    frame = cv2.imread(path)
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    clahe_image = clahe.apply(gray)
+    faces_rect = emotion_clf.get_faces_rect(clahe_image)
+
+    for rect in faces_rect:
+        landmark = emotion_clf.get_landmark(rect, clahe_image)
+
+        if landmark:
+            landmark_vectorized = emotion_clf.vectorize_landmark(landmark)
+            prediction = predict(landmark_vectorized)
+
+            overlay_frame(frame, rect, emotion_clf.EMOTIONS_IN_DATASET[prediction])
+
+            if SHOW_FACE_DETAIL:
+                for point in landmark:
+                    cv2.circle(
+                        frame,
+                        (point[0], point[1]),
+                        1,
+                        (0, 0, 255),
+                        thickness=2,
+                    )
+
+    cv2.imshow("WEBCAM (Nhan phim 'Q' de thoat)", frame)
+    cv2.waitKey()
+    cv2.destroyAllWindows()
+
+
 def overlay_frame(frame, face_rect, emotion):
     font_color = (0, 0, 0)
     if emotion == "angry":
@@ -94,4 +126,5 @@ def overlay_frame(frame, face_rect, emotion):
 
 
 if __name__ == "__main__":
-    show_webcam_and_run()
+    # show_webcam_and_run()
+    run_image("D:\\smile2.png")
