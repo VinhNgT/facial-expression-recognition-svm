@@ -1,2 +1,5 @@
 .venv/
+.vscode/
+__pycache__/
+legacy/
 model_data/
