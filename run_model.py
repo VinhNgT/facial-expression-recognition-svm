@@ -40,14 +40,15 @@ def show_webcam_and_run():
 
                 overlay_frame(frame, rect, emotion_clf.EMOTIONS_IN_DATASET[prediction])
 
-                for point in landmark:
-                    cv2.circle(
-                        frame,
-                        (point[0], point[1]),
-                        1,
-                        (100, 150, 200),
-                        thickness=2,
-                    )
+                if SHOW_FACE_DETAIL:
+                    for point in landmark:
+                        cv2.circle(
+                            frame,
+                            (point[0], point[1]),
+                            1,
+                            (100, 150, 200),
+                            thickness=2,
+                        )
 
         cv2.imshow("WEBCAM (Nhan phim 'Q' de thoat)", frame)
         ret, frame = cam.read()
