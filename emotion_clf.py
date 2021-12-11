@@ -22,14 +22,14 @@ EMOTIONS_IN_DATASET = [
     "surprise",
     "neutral",
 ]
-EMOTIONS_TO_TRAIN_FOR = ["angry", "happy", "sad"]
+EMOTIONS_TO_TRAIN_FOR = ["angry", "happy", "sad", "surprise"]
 
 detector = dlib.get_frontal_face_detector()
 model_predictor = dlib.shape_predictor(MODEL_PREDICTOR_FILE)
 clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
 clf = make_pipeline(
     StandardScaler(),
-    SVC(C=0.01, kernel="linear", decision_function_shape="ovo"),
+    SVC(kernel="linear", decision_function_shape="ovo", cache_size=1000),
 )
 
 
@@ -43,9 +43,9 @@ def get_landmark(face_rect, image):
     landmarks_selected = []
 
     for point_id in range(landmarks_full.num_parts):
-        # Bỏ qua đường biên cằm và xung quanh mặt do nó không biểu thị cảm xúc, bớt lãng phí tài nguyên
-        # Chỉ lấy các đường biên: Mắt, Lông mày, Mũi, Miệng
-        if point_id <= 16:
+        # Bỏ qua đường biên xung quanh mặt do nó không biểu thị cảm xúc, bớt lãng phí tài nguyên
+        # Chỉ lấy các đường biên: Mắt, Lông mày, Mũi, Miệng, Cằm
+        if point_id <= 16 and point_id not in range(6, 11):
             continue
 
         landmarks_selected.append(
@@ -124,5 +124,47 @@ def train_model():
         pickle.dump(clf, out)
 
 
+def debug():
+    cam = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+
+    if cam.isOpened():
+        ret, frame = cam.read()
+    else:
+        print("Không tìm thấy WebCam")
+        return
+
+    while ret:
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        clahe_image = clahe.apply(gray)
+        faces_rect = get_faces_rect(clahe_image)
+
+        for rect in faces_rect:
+            landmark = get_landmark(rect, clahe_image)
+
+            for id, point in enumerate(landmark):
+                color = (0, 0, 255)
+                # if id in range(6, 11):
+                #     color = (0, 255, 0)
+
+                cv2.circle(
+                    frame,
+                    (point[0], point[1]),
+                    1,
+                    color,
+                    thickness=2,
+                )
+
+        cv2.imshow("WEBCAM (Nhan phim 'Q' de thoat)", frame)
+        ret, frame = cam.read()
+
+        if cv2.waitKey(1) & 0xFF == ord("q"):
+            break
+
+    cam.release()
+    cv2.destroyAllWindows()
+    pass
+
+
 if __name__ == "__main__":
     train_model()
+    # debug()
