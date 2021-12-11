@@ -98,6 +98,8 @@ def overlay_frame(frame, face_rect, emotion):
         font_color = (0, 255, 0)
     if emotion == "sad":
         font_color = (255, 0, 0)
+    if emotion == "surprise":
+        font_color = (255, 153, 255)
 
     cv2.rectangle(
         frame,
