@@ -3,3 +3,4 @@
 __pycache__/
 legacy/
 model_data/
+debug.py
