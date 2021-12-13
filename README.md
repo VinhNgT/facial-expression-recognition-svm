@@ -53,8 +53,8 @@ neutral:neutral_face:**
 
 Tuy nhiên, càng nhiều cảm xúc mà chương trình có thể nhận dạng thì độ chính xác sẽ càng thấp, cho nên chúng ta sẽ chỉ huấn luyện nhận dạng một lượng cảm xúc nhất định thôi để tăng độ chính xác chung cho toàn bộ chương trình:
 
-- Mở file `expression_clf.py`
-- Ở phần `EMOTIONS_TO_TRAIN_FOR`, thiết lập các loại cảm xúc mà chương trình sẽ nhận dạng, mặc định là `["angry", "happy", "sad", "surprise"]`
+- Mở file `train_clf.py`
+- Ở phần `EMOTIONS_TO_TRAIN_FOR`, thiết lập các loại cảm xúc mà bộ phân lớp sẽ nhận dạng, mặc định là `["angry", "happy", "sad", "surprise"]`
 - Chọn trong danh sách các cảm xúc sau: `angry, disgust, fear, happy, sad, surprise, neutral`
 - Bắt đầu quá trình huấn luyện:
 
@@ -105,25 +105,36 @@ Trong phần này mình sẽ giải thích cách xây dựng bộ phân lớp SV
 
 - `predict_camera.py`, `predict_image.py`, `predict_video.py` là file chạy bộ phân lớp sử dụng các phương thức dữ liệu đầu vào lần lượt là từ camera, từ file ảnh, từ file video.
 
-### Xây dựng bộ dữ liệu cho bộ phân lớp SVM
+### Xây dựng bộ phân lớp SVM
 Đầu tiên ta sử dụng phương thức có sẵn trong thư viện dlib `get_frontal_face_detector()` để phát hiện các khuôn mặt có trong ảnh:
 
-<img src="resources/full_face.png" height="300">
+<img src="resources/full_face.png" height="250">
 
 Tiếp theo truyền các khuôn mặt phát hiện được vào bộ nhận dạng đường bao đặc điểm khuôn mặt `shape_predictor_68_face_landmarks.dat`, file này là bộ nhận dạng dlib đã được huấn luyện sẵn để xác định các đặc trưng của khuôn mặt trên ảnh, được biểu diễn bằng 68 điểm:
 
-<img src="resources/68.png" height="300">
+<img src="resources/68.png" height="250">
 
-Trong số 68 điểm này, ta bỏ qua các điểm 0->5, 11->16 do các điểm này không mang nhiều thông tin cảm xúc mà ta cần tìm, giúp tiết kiệm tài nguyên cho các quá trình sau.\
+Trong số 68 điểm này, ta bỏ qua các điểm 0->5, 11->16 do các điểm này không mang nhiều thông tin cảm xúc mà ta cần tìm, giúp tiết kiệm tài nguyên cho các quá trình kế tiếp.\
 Kết quả nhận được được đưa lần lượt qua các lớp tiền xử lý:
 
 <img src="resources/full_landmark.png">
 
-<br />
+- Khuôn mặt ban đầu đưa vào `shape_predictor_68_face_landmarks.dat` nhận lại được 56 điểm (68 điểm - 12 điểm không quan trọng) biểu diễn các đặc điểm: Mắt, Lông mày, Mũi, Miệng, Cằm
+- Từ 56 điểm này, lấy điểm giữa mũi làm tâm (0, 0), vẽ 55 vector tới các điểm khác, vector hoá đẩy khuôn mặt về tâm trục toạ độ xOy, mục đích giúp bộ phân lớp có thể phân biệt các khuôn mặt ở bất kỳ vị trí nào trong ảnh
+- Lấy cột mũi làm chuẩn, căn chỉnh (quay) tất cả các vector sao cho trục x, y của khuôn mặt vuông góc với trục x, y của mặt phẳng hình ảnh, khử độ nghiêng của ảnh, giúp cân bằng khuôn mặt trong trường hợp khuôn mặt hơi nghiêng so với camera
+- Chuẩn hoá các vector về khoảng giá trị (-1, 1), việc này giúp bộ phân lớp có thể phân biệt các khuôn mặt ở bất kỳ kích cỡ nào
 
-*Đang update...*
+Kết quả cuối cùng được đưa vào bộ phân lớp SVM để huấn luyện, tuỳ vào số lượng các cảm xúc cần nhận dạng và kích thước bộ dữ liệu đầu vào mà thời gian huấn luyện sẽ khác nhau
 
-<br />
+## Sử dụng bộ phân lớp SVM để nhận dạng dữ liệu mới
+
+- Nhận dữ liệu đầu vào từ nguồn (camera/ảnh/video)
+- Đưa dữ liệu nhận được qua quá trình tiền xử lý tương tự như quá trình chuẩn bị dữ liệu huấn luyện đã được mô tả ở trên: **Phát hiện mặt -> Lấy đặc điểm -> Vector hoá -> Căn chỉnh -> Chuẩn hoá**
+- Yêu cầu bộ phân lớp SVM nhận dạng dữ liệu đã qua xử lý
+
+Kết quả nhận được là một trong số các string kết quả: `angry, disgust, fear, happy, sad, surprise, neutral`
+
+<img src="resources/group_result.png">
 
 ## (▀̿Ĺ̯▀̿ ̿) Tác giả
-*Nguyễn Thế Vinh - CNT59ĐH - Đại học Hàng Hải Việt Nam*
+#### *Nguyễn Thế Vinh - CNT59ĐH - Đại học Hàng Hải Việt Nam*
