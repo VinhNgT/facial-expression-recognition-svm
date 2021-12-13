@@ -103,7 +103,7 @@ Trong phần này sẽ giải thích cách xây dựng bộ phân lớp SVM đ�
 - `run_clf.py` là file chứa các biến và hàm cần thiết cho việc nhận dạng cảm xúc trên ảnh, các tham số quan trọng là:
     - `SHOW_FACE_DETAIL_LV`: Mức độ chi tiết hiển thị các đặc trưng khuôn mặt
 
-- `predict_camera.py`, `predict_image.py`, `predict_video.py` là file chạy bộ phân lớp sử dụng các phương thức dữ liệu đầu vào lần lượt là từ camera, từ file ảnh, từ file video.
+- `predict_camera.py`, `predict_image.py`, `predict_video.py` là file chạy bộ phân lớp sử dụng các phương thức dữ liệu đầu vào lần lượt là từ camera, từ file ảnh, từ file video
 
 ### Xây dựng bộ phân lớp SVM
 Mở dataset `fer2013.csv`, lấy ra tất cả các ảnh và cảm xúc tương ứng với nó, rồi với mỗi bức ảnh, sử dụng phương thức có sẵn trong thư viện dlib `get_frontal_face_detector()` để phát hiện các khuôn mặt có trong ảnh:
@@ -124,7 +124,7 @@ Kết quả nhận được được đưa lần lượt qua các lớp tiền x
 - Lấy cột mũi làm chuẩn, căn chỉnh (quay) tất cả các vector sao cho trục x, y của khuôn mặt vuông góc với trục x, y của mặt phẳng hình ảnh, khử độ nghiêng của ảnh, giúp cân bằng khuôn mặt trong trường hợp khuôn mặt hơi nghiêng so với camera
 - Chuẩn hoá các vector về khoảng giá trị (-1, 1), việc này giúp bộ phân lớp có thể phân biệt các khuôn mặt ở bất kỳ kích cỡ nào
 
-Kết quả cuối cùng được đưa vào bộ phân lớp SVM để huấn luyện, tuỳ vào số lượng các cảm xúc cần nhận dạng và kích thước bộ dữ liệu đầu vào mà thời gian huấn luyện sẽ khác nhau
+Kết quả cuối cùng được đưa vào bộ phân lớp SVM để huấn luyện, tuỳ vào số lượng các cảm xúc cần nhận dạng và kích thước bộ dữ liệu đầu vào mà thời gian huấn luyện sẽ khác nhau.
 
 ## Sử dụng bộ phân lớp SVM để nhận dạng dữ liệu mới
 
