@@ -89,35 +89,41 @@ Tuy nhiên, càng nhiều cảm xúc mà chương trình có thể nhận dạng
 - Để thiết lập mức độ chi tiết hiển thị các đặc trưng khuôn mặt, đặt `SHOW_FACE_DETAIL_LV = <0, 1, hoặc 2>` trong file `run_clf.py`
 
 ## Cơ chế hoạt động
-Trong phần này mình sẽ giải thích cách xây dựng bộ phân lớp SVM để giải quyết bài toán nhận diện biểu cảm khuôn mặt này\
-Cách mình sử dụng không yêu cầu kiến thức toán học cao, chỉ cần kiến thức cơ bản về SVM và điểm, vector trên trục toạn độ xOy.
+Trong phần này mình sẽ giải thích cách xây dựng bộ phân lớp SVM để giải quyết bài toán nhận diện biểu cảm khuôn mặt này.
 
-### Cấu trúc thành phần
-`expression_clf.py` là file chứa các biến và hàm cần thiết cho việc xây dựng và sử dụng bộ phân lớp, các tham số quan trọng là:
-- `LANDMARK_PREDICTOR_FILE`: File nhận dạng dlib đã được huấn luyện sẵn để nhận dạng đường bao các đặc điểm khuôn mặt
-- `DATASET`: File có chứa hơn 35,000 bức ảnh các cảm xúc khác nhau, bộ phân lớp sẽ được huấn luyện dựa trên dữ liệu ban đầu này
-- `CLF_FILE`: Đường dẫn lưu bộ phân lớp sau khi được huấn luyện xong
+### Cấu trúc thành phần các file
+- `expression_clf.py` là file chứa các biến và hàm cần thiết cho việc xây dựng và sử dụng bộ phân lớp, các tham số quan trọng là:
+    - `LANDMARK_PREDICTOR_FILE`: File nhận dạng dlib đã được huấn luyện sẵn để nhận dạng đường bao các đặc điểm khuôn mặt
+    - `DATASET`: File có chứa hơn 35,000 bức ảnh các cảm xúc khác nhau, bộ phân lớp sẽ được huấn luyện dựa trên dữ liệu ban đầu này
+    - `CLF_FILE`: Đường dẫn lưu bộ phân lớp sau khi được huấn luyện xong
 
-`train_clf.py` là file chứa các biến và hàm cần thiết cho việc huấn luyện bộ phân lớp, các tham số quan trọng là:
-- `EMOTIONS_TO_TRAIN_FOR`: Các loại biểu cảm khuôn mặt mà ta muốn huấn luyện bộ phân lớp
+- `train_clf.py` là file chứa các biến và hàm cần thiết cho việc huấn luyện bộ phân lớp, các tham số quan trọng là:
+    - `EMOTIONS_TO_TRAIN_FOR`: Các loại biểu cảm khuôn mặt mà ta muốn huấn luyện bộ phân lớp
 
-`run_clf.py` là file chứa các biến và hàm cần thiết cho việc nhận dạng cảm xúc trên ảnh, các tham số quan trọng là:
-- `SHOW_FACE_DETAIL_LV`: Mức độ chi tiết hiển thị các đặc trưng khuôn mặt
+- `run_clf.py` là file chứa các biến và hàm cần thiết cho việc nhận dạng cảm xúc trên ảnh, các tham số quan trọng là:
+    - `SHOW_FACE_DETAIL_LV`: Mức độ chi tiết hiển thị các đặc trưng khuôn mặt
 
-`predict_camera.py`, `predict_image.py`, `predict_video.py` là file chạy bộ phân lớp sử dụng các phương thức dữ liệu đầu vào lần lượt là từ camera, từ file ảnh, từ file video.
+- `predict_camera.py`, `predict_image.py`, `predict_video.py` là file chạy bộ phân lớp sử dụng các phương thức dữ liệu đầu vào lần lượt là từ camera, từ file ảnh, từ file video.
 
 ### Xây dựng bộ dữ liệu cho bộ phân lớp SVM
-Ta không thể cho trực tiếp ảnh làm dữ liệu ban đầu cho SVM được, bởi vì làm thế ta sẽ xây dựng bộ nhận diện ảnh chứ không phải nhận diện cảm xúc, và độ chính xác sẽ vô cùng thấp. Để xây dựng đúng bộ nhận diện, ta phải có một phương thức để tách các đặc trưng biểu thị cảm xúc ra khỏi ảnh, rồi mới dùng chúng để huấn luyện bộ phân lớp SVM.
+Đầu tiên ta sử dụng phương thức có sẵn trong thư viện dlib `get_frontal_face_detector()` để phát hiện các khuôn mặt có trong ảnh:
 
-Ta dùng file `shape_predictor_68_face_landmarks.dat` để làm điều đó, file này là bộ nhận dạng dlib đã được huấn luyện sẵn để xác định các đặc trưng của khuôn mặt trên ảnh, được biểu diễn bằng 68 điểm:
+<img src="resources/full_face.png" height="300">
 
-<img src="data/68.png" width="300">
+Tiếp theo truyền các khuôn mặt phát hiện được vào bộ nhận dạng đường bao đặc điểm khuôn mặt `shape_predictor_68_face_landmarks.dat`, file này là bộ nhận dạng dlib đã được huấn luyện sẵn để xác định các đặc trưng của khuôn mặt trên ảnh, được biểu diễn bằng 68 điểm:
 
-Trong số 68 điểm này, ta bỏ qua các điểm 0->5, 11->16 do các điểm này không mang nhiều thông tin cảm xúc mà ta cần tìm, giúp tiết kiệm tài nguyên cho các quá trình sau.
+<img src="resources/68.png" height="300">
 
-Để sử dụng bộ nhận diện đặc điểm khuôn mặt này, trước hết ta cần phải truyền dữ liệu đầu vào là khung ảnh khuôn mặt mà ta muốn tìm đặc điểm bằng phương thức có sẵn trong thư viện dlib `get_frontal_face_detector()`:
+Trong số 68 điểm này, ta bỏ qua các điểm 0->5, 11->16 do các điểm này không mang nhiều thông tin cảm xúc mà ta cần tìm, giúp tiết kiệm tài nguyên cho các quá trình sau.\
+Kết quả nhận được được đưa lần lượt qua các lớp tiền xử lý:
 
+<img src="resources/full_landmark.png">
 
+<br />
+
+*Đang update...*
+
+<br />
 
 ## (▀̿Ĺ̯▀̿ ̿) Tác giả
 *Nguyễn Thế Vinh - CNT59ĐH - Đại học Hàng Hải Việt Nam*
