@@ -96,14 +96,21 @@ def overlay_landmark(frame, landmark):
 # Vẽ kết quả nhận diện lên ảnh
 def overlay_prediction(frame, face_rect, emotion):
     font_color = DEFAULT_OVERLAY_COLOR
+
     if emotion == "angry":
         font_color = (0, 0, 255)
+    if emotion == "disgust":
+        font_color = (0, 51, 102)
+    if emotion == "fear":
+        font_color = (102, 0, 102)
     if emotion == "happy":
         font_color = (0, 255, 0)
     if emotion == "sad":
         font_color = (255, 0, 0)
     if emotion == "surprise":
         font_color = (255, 153, 255)
+    if emotion == "neutral":
+        font_color = (255, 255, 255)
 
     cv2.rectangle(
         frame,
