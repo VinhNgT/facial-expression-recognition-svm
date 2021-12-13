@@ -89,7 +89,7 @@ Tuy nhiên, càng nhiều cảm xúc mà chương trình có thể nhận dạng
 - Để thiết lập mức độ chi tiết hiển thị các đặc trưng khuôn mặt, đặt `SHOW_FACE_DETAIL_LV = <0, 1, hoặc 2>` trong file `run_clf.py`
 
 ## Cơ chế hoạt động
-Trong phần này mình sẽ giải thích cách xây dựng bộ phân lớp SVM để giải quyết bài toán nhận diện biểu cảm khuôn mặt này.
+Trong phần này sẽ giải thích cách xây dựng bộ phân lớp SVM để giải quyết bài toán nhận diện biểu cảm khuôn mặt này.
 
 ### Cấu trúc thành phần các file
 - `expression_clf.py` là file chứa các biến và hàm cần thiết cho việc xây dựng và sử dụng bộ phân lớp, các tham số quan trọng là:
@@ -106,7 +106,7 @@ Trong phần này mình sẽ giải thích cách xây dựng bộ phân lớp SV
 - `predict_camera.py`, `predict_image.py`, `predict_video.py` là file chạy bộ phân lớp sử dụng các phương thức dữ liệu đầu vào lần lượt là từ camera, từ file ảnh, từ file video.
 
 ### Xây dựng bộ phân lớp SVM
-Đầu tiên ta sử dụng phương thức có sẵn trong thư viện dlib `get_frontal_face_detector()` để phát hiện các khuôn mặt có trong ảnh:
+Mở dataset `fer2013.csv`, lấy ra tất cả các ảnh và cảm xúc tương ứng với nó, rồi với mỗi bức ảnh, sử dụng phương thức có sẵn trong thư viện dlib `get_frontal_face_detector()` để phát hiện các khuôn mặt có trong ảnh:
 
 <img src="resources/full_face.png" height="250">
 
