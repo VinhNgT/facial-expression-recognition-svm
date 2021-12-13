@@ -25,4 +25,4 @@ def run_video(path):
 
 
 if __name__ == "__main__":
-    run_video("data/linus.mp4")
+    run_video("resources/linus.mp4")
