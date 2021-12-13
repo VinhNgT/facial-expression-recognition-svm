@@ -5,7 +5,10 @@ Chứa các biến và hàm cần thiết cho quá trình huấn luyện và nh�
 
 import dlib
 from cv2 import createCLAHE
+from numpy.lib.function_base import angle
 from sklearn.svm import SVC
+import numpy as np
+from math import cos, sin
 
 # Các thông số cho bộ nhận dạng
 LANDMARK_PREDICTOR_FILE = "model_data/shape_predictor_68_face_landmarks.dat"
@@ -20,7 +23,6 @@ EMOTIONS_IN_DATASET = [
     "surprise",
     "neutral",
 ]
-EMOTIONS_TO_TRAIN_FOR = ["angry", "happy", "sad", "surprise"]
 
 face_detector = dlib.get_frontal_face_detector()
 model_predictor = dlib.shape_predictor(LANDMARK_PREDICTOR_FILE)
@@ -71,13 +73,48 @@ def vectorize_landmark(landmark):
     return landmark_vectorized
 
 
-# Chuẩn hoá vector thành khoảng -1 đến 1
+# Căn chỉnh các vector để khử độ nghiêng của ảnh
+# Giúp cân bằng khuôn mặt trong trường hợp trục x khuôn mặt không vuông góc với trục x camera
+def align_landmark_vector(landmark_vetors):
+    # Vector unit trục y
+    unit_y_vector = (0, -1)
+
+    top_nose = (landmark_vetors[15 * 2], landmark_vetors[15 * 2 + 1])
+
+    # Vector mũi
+    nose_vector = (
+        top_nose[0] - 0,
+        top_nose[1] - 0,
+    )
+    unit_nose_vector = nose_vector / np.linalg.norm(nose_vector)
+
+    dot_product = np.dot(unit_y_vector, unit_nose_vector)
+
+    # Góc mũi so với trục y của ảnh (radian)
+    nose_angle = np.arccos(dot_product)
+
+    # Quay tất cả vector để khử độ nghiêng của mặt
+    theta = nose_angle
+    rotation_matrix = np.array([[cos(theta), -sin(theta)], [sin(theta), cos(theta)]])
+
+    result = []
+    for i in range(0, len(landmark_vetors), 2):
+        point = np.array((landmark_vetors[i], landmark_vetors[i + 1]))
+        new_point = np.dot(rotation_matrix, point)
+
+        result.append(new_point[0])
+        result.append(new_point[1])
+
+    return result
+
+
+# Chuẩn hoá các vector thành khoảng -1 đến 1
 # Chuẩn hoá vector giúp bộ phân lớp có thể phân biệt các khuôn mặt ở bất kỳ kích cỡ nào
-def normalize_landmark_vector(landmark_vetorized):
+def normalize_landmark_vector(landmark_vetors):
     result = []
 
-    max_vector = abs(max(landmark_vetorized, key=lambda vector: abs(vector)))
-    for vector in landmark_vetorized:
+    max_vector = abs(max(landmark_vetors, key=lambda vector: abs(vector)))
+    for vector in landmark_vetors:
         new_vector = vector / max_vector
         result.append(new_vector)
 

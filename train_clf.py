@@ -8,6 +8,8 @@ import numpy as np
 import pandas as pd
 import pickle as pk
 
+EMOTIONS_TO_TRAIN_FOR = ["angry", "happy", "sad", "surprise"]
+
 # Load các dữ liệu trong bộ dữ liệu MODEL_DATASET và phân lớp chúng
 # Chuẩn bị các dữ liệu cần thiết cho quá trình huấn luyện
 def make_sets():
@@ -21,7 +23,7 @@ def make_sets():
     for _, row in df.iterrows():
         # Bỏ qua các dữ liệu không được thiết lập
         emotion_id = row["emotion"]
-        if eclf.EMOTIONS_IN_DATASET[emotion_id] not in eclf.EMOTIONS_TO_TRAIN_FOR:
+        if eclf.EMOTIONS_IN_DATASET[emotion_id] not in EMOTIONS_TO_TRAIN_FOR:
             continue
 
         # Giải mã ảnh, các ảnh trong bộ dữ liệu là ảnh xám có kích thước 48x48
@@ -38,9 +40,9 @@ def make_sets():
 
             # Nếu lấy được các đường bao...
             if landmark:
-                # Vector hoá đường bao, đồng thời chuẩn hoá luôn
+                # Vector hoá đường bao, căn chỉnh, chuẩn hoá vector
                 landmark_vectorized = eclf.normalize_landmark_vector(
-                    eclf.vectorize_landmark(landmark)
+                    eclf.align_landmark_vector(eclf.vectorize_landmark(landmark))
                 )
 
                 # Nếu dữ liệu này là dữ liệu 'Training' thì cho vào bộ training, còn ko thì cho vào bộ test

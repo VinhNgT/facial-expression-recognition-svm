@@ -13,4 +13,4 @@ def run_image(path):
 
 
 if __name__ == "__main__":
-    run_image("data\smile.jpg")
+    run_image("D:\group.jpg")

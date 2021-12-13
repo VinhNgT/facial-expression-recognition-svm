@@ -46,9 +46,9 @@ def predict_frame(frame):
             # Vector hoá đường bao
             landmark_vectorized = eclf.vectorize_landmark(landmark)
 
-            # Chuẩn hoá vector đường bao
+            # Căn chỉnh, chuẩn hoá vector
             landmark_vectorized_normalized = eclf.normalize_landmark_vector(
-                landmark_vectorized
+                eclf.align_landmark_vector(landmark_vectorized)
             )
 
             # Chạy suy đoán
