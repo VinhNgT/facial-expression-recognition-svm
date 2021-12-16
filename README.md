@@ -106,7 +106,7 @@ Phần này sẽ giải thích cách xây dựng bộ phân lớp SVM để gi�
 - `predict_camera.py`, `predict_image.py`, `predict_video.py` là file chạy bộ phân lớp sử dụng các phương thức dữ liệu đầu vào lần lượt là từ camera, từ file ảnh, từ file video
 
 ### Xây dựng bộ phân lớp SVM
-Mở dataset `fer2013.csv`, lấy ra tất cả các ảnh và cảm xúc tương ứng với nó, rồi với mỗi bức ảnh, sử dụng phương thức có sẵn trong thư viện dlib `get_frontal_face_detector()` để phát hiện các khuôn mặt có trong ảnh:
+Mở dataset `fer2013.csv`, lấy ra tất cả các ảnh và cảm xúc tương ứng với nó, rồi với mỗi bức ảnh, áp dụng CLAHE lên ảnh để cân bằng độ sáng, rồi sử dụng phương thức có sẵn trong thư viện dlib `get_frontal_face_detector()` để phát hiện các khuôn mặt có trong ảnh:
 
 <img src="resources/full_face.png" height="250">
 
@@ -115,7 +115,7 @@ Tiếp theo truyền các khuôn mặt phát hiện được vào bộ nhận d�
 <img src="resources/68.png" height="250">
 
 Trong số 68 điểm này, ta bỏ qua các điểm 0->5, 11->16 do các điểm này không mang nhiều thông tin cảm xúc mà ta cần tìm, giúp tiết kiệm tài nguyên cho các quá trình kế tiếp.\
-Kết quả nhận được được đưa lần lượt qua các lớp tiền xử lý:
+Quá trình này được biểu diễn như sau:
 
 <img src="resources/full_landmark.png">
 
@@ -129,8 +129,8 @@ Kết quả cuối cùng được đưa vào bộ phân lớp SVM để huấn l
 ## Sử dụng bộ phân lớp SVM để nhận dạng dữ liệu mới
 
 - Nhận dữ liệu đầu vào từ nguồn (camera/ảnh/video)
-- Đưa dữ liệu nhận được qua quá trình tiền xử lý tương tự như quá trình chuẩn bị dữ liệu huấn luyện đã được mô tả ở trên: **Phát hiện mặt -> Lấy đặc điểm -> Vector hoá -> Căn chỉnh -> Chuẩn hoá**
-- Yêu cầu bộ phân lớp SVM nhận dạng dữ liệu đã qua xử lý
+- Đưa dữ liệu nhận được qua quá trình xử lý tương tự như quá trình chuẩn bị dữ liệu huấn luyện đã được mô tả ở trên: **Phát hiện mặt -> Lấy đặc điểm -> Vector hoá -> Căn chỉnh -> Chuẩn hoá**
+- Yêu cầu bộ phân lớp SVM nhận dạng dữ liệu nhận được ở bước trên
 
 Kết quả nhận được là một trong số các string kết quả: `angry, disgust, fear, happy, sad, surprise, neutral`
 
