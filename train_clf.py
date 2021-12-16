@@ -8,8 +8,9 @@ import numpy as np
 import pandas as pd
 import pickle as pk
 import os
+import timeit
 
-# "angry", "disgust", "fear", "happy", "sad", "surprise", "neutral",
+# "angry", "disgust", "fear", "happy", "sad", "surprise", "neutral"
 EMOTIONS_TO_TRAIN_FOR = ["angry", "happy", "sad", "surprise"]
 DATASET_CACHE = eclf.DATASET + "cache"
 
@@ -105,16 +106,18 @@ def train_model():
     X_train, y_train, X_test, y_test = load_dataset_cache(EMOTIONS_TO_TRAIN_FOR)
 
     print("Huấn luyện...")
+    train_start_time = timeit.default_timer()
     eclf.clf.fit(X_train, y_train)
+    print(
+        f"Đã huấn luyện xong, thời gian huấn luyện: {timeit.default_timer() - train_start_time:.3f} giây"
+    )
 
     print("Kiểm tra độ chính xác...")
     pred_accuracy = eclf.clf.score(X_test, y_test)
-    print("Độ chính xác = ", pred_accuracy * 100, "%")
+    print(f"Độ chính xác = {pred_accuracy * 100:.3f} %")
 
     with open(eclf.CLF_FILE, "wb") as out:
         pk.dump(eclf.clf, out)
-
-    print("Đã huấn luyện xong")
 
 
 if __name__ == "__main__":
