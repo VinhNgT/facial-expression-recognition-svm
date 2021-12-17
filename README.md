@@ -130,9 +130,7 @@ Kết quả cuối cùng được đưa vào bộ phân lớp SVM để huấn l
 
 - Nhận dữ liệu đầu vào từ nguồn (camera/ảnh/video)
 - Đưa dữ liệu nhận được qua quá trình xử lý tương tự như quá trình chuẩn bị dữ liệu huấn luyện đã được mô tả ở trên: **Phát hiện mặt -> Lấy đặc điểm -> Vector hoá -> Căn chỉnh -> Chuẩn hoá**
-- Yêu cầu bộ phân lớp SVM nhận dạng dữ liệu nhận được ở bước trên
-
-Kết quả nhận được là một trong số các string kết quả: `angry, disgust, fear, happy, sad, surprise, neutral`
+- Đưa dữ liệu đã qua xử lý vào bộ phân lớp SVM để nhận dạng, kết quả nhận được là một trong số các string kết quả: `angry, disgust, fear, happy, sad, surprise, neutral`
 
 <img src="resources/group_result.png">
 
