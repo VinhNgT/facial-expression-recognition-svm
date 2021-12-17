@@ -137,5 +137,8 @@ Kết quả nhận được là một trong số các string kết quả: `angry
 <img src="resources/group_result.png">
 
 ## (▀̿Ĺ̯▀̿ ̿) Tác giả
+<<<<<<< HEAD
  - ***Nguyễn Thế Vinh - CNT59ĐH - Đại học Hàng Hải Việt Nam***
  - ***Mạc Quang Thành - CNT59ĐH - Đại học Hàng Hải Việt Nam***
+=======
+>>>>>>> b0367a7705b3735bd3556f543f89fdef350aa463
