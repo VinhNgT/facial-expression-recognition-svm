@@ -2,5 +2,5 @@
 .vscode/
 __pycache__/
 legacy/
-model_data/
+# model_data/
 debug.py
